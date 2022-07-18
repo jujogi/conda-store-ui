@@ -11,6 +11,7 @@ module.exports = {
       project: "tsconfig.eslint.json",
       sourceType: "module"
     },
+    ignorePatterns: ["jest.config.js", "babel.config.js"],
     plugins: ["@typescript-eslint"],
     rules: {
       "@typescript-eslint/explicit-function-return-type": "off",
