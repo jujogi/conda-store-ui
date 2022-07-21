@@ -2,7 +2,7 @@ import React from "react";
 import { getByTestId, render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import "@testing-library/jest-dom/extend-expect";
-import { Channel } from "../Channel";
+import { Channel } from "../src/features/channels/components/Channel";
 import ReactDOM from "react-dom";
 import { create } from "react-test-renderer";
 
