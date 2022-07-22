@@ -1,30 +1,32 @@
 import React from "react";
-import { getByTestId, render, screen, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import { fireEvent, getByTestId, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import ReactDOM from "react-dom";
-import { create } from "react-test-renderer";
 import { ChannelsList } from "../src/features/channels/components/ChannelsList";
-import {
-  StyledAccordionDetails,
-  StyledAccordionExpandIcon,
-  StyledAccordionSummary,
-  StyledAccordionTitle
-} from "../src/styles";
-import Accordion from "@mui/material/Accordion";
-import Box from "@mui/material/Box";
+import { mockTheme } from "./testutils";
 
-import { Channel } from "../src/features/channels/components/Channel";
+const channelsList = ["conda-store", "default"];
 
-const channelsList = ["conda-store", "default", "conda forge"];
+describe("<ChannelsList />", () => {
+  it("render component", () => {
+    render(mockTheme(<ChannelsList channelList={channelsList} />));
+    expect(channelsList.length).toBe(2);
+    expect(screen.getByText("Channels")).toBeInTheDocument();
+    expect(screen.getByText(`${channelsList[0]}`)).toBeInTheDocument();
+    expect(screen.getByText(`${channelsList[1]}`)).toBeInTheDocument();
 
-test("render Accordion component", () => {
-  const { container } = render(<ChannelsList channelList={channelsList} />);
-  //screen.debug();
+    expect(screen.getByText(`${channelsList[0]}`)).not.toBeVisible();
+    expect(screen.getByText(`${channelsList[1]}`)).not.toBeVisible();
+  });
+
+  it("expand component to see available channels", () => {
+    render(mockTheme(<ChannelsList channelList={channelsList} />));
+    const arrow = getByTestId(
+      document.documentElement,
+      "ArrowRightRoundedIcon"
+    );
+    fireEvent.click(arrow);
+
+    expect(screen.getByText(`${channelsList[0]}`)).toBeVisible();
+    expect(screen.getByText(`${channelsList[1]}`)).toBeVisible();
+  });
 });
-
-//Snapshot
-// const tree = create(<ChannelsList channelList={channelsList} />);
-// test("snapshot", () => {
-//   expect(tree).toMatchSnapshot();
-// });

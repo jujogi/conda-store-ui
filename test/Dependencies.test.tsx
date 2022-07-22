@@ -9,6 +9,5 @@ describe("<Dependencies />", () => {
     const { container } = render(
       mockTheme(<Dependencies mode="read-only" dependencies={[]} />)
     );
-    console.log(container);
   });
 });
