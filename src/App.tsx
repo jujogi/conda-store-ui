@@ -4,6 +4,7 @@ import "../style/index.css";
 import { EnvMetadata } from "./features/metadata";
 import { buildMapper } from "./utils/helpers/buildMapper";
 import { ArtifactList } from "src/features/artifacts";
+import { useLoginUserMutation } from "src/features/login/loginApiSlice";
 
 export const App = () => {
   const artifactList = [
@@ -61,6 +62,18 @@ export const App = () => {
 
   const builds = buildMapper(build_response);
 
+  const [username] = React.useState("juanjo");
+  const [password] = React.useState("password");
+  const [loginUser, { data, isLoading }] = useLoginUserMutation();
+
+  const handleLogin = async () => {
+    try {
+      await loginUser({ username, password });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <>
       <Typography sx={{ fontSize: "25px", textAlign: "center" }}>
@@ -68,6 +81,15 @@ export const App = () => {
       </Typography>
       <ArtifactList artifacts={artifactList} />
       <EnvMetadata builds={builds} />
+      <button
+        onClick={() => handleLogin()}
+        style={{
+          fontSize: "20px",
+          marginTop: "20px"
+        }}
+      >
+        Click to login!
+      </button>
     </>
   );
 };
