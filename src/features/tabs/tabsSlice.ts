@@ -4,13 +4,15 @@ import { Environment } from "src/common/models";
 export interface ITabsState {
   selectedEnvironments: Environment[];
   selectedEnvironment: Environment | null;
-  value: number;
+  value: number | string;
+  createEnvironment: boolean;
 }
 
 const initialState: ITabsState = {
   selectedEnvironments: [],
   selectedEnvironment: null,
-  value: 0
+  value: 0,
+  createEnvironment: false
 };
 
 export const tabsSlice = createSlice({
@@ -43,6 +45,7 @@ export const tabsSlice = createSlice({
         env => env.id === closedEnvironmentId
       );
       const listLength = state.selectedEnvironments.length;
+      const createEnvironmentTab = state.createEnvironment;
 
       if (action.payload.selectedEnvironmentId === closedEnvironmentId) {
         if (listLength > 1) {
@@ -51,6 +54,9 @@ export const tabsSlice = createSlice({
 
           state.selectedEnvironment = rightItem ?? leftItem;
           state.value = state.selectedEnvironment.id;
+        } else if (createEnvironmentTab && listLength === 1) {
+          state.value = "create";
+          state.selectedEnvironment = null;
         } else {
           state.selectedEnvironment = null;
           state.value = 0;
@@ -73,9 +79,29 @@ export const tabsSlice = createSlice({
       if (environment) {
         state.selectedEnvironment = environment;
       }
+    },
+    newEnvironmentCreate: state => {
+      state.createEnvironment = true;
+      state.value = "create";
+    },
+    newEnvironmentClose: state => {
+      const listLength = state.selectedEnvironments.length;
+      state.createEnvironment = false;
+
+      if (!listLength) {
+        state.value = initialState.value;
+        return;
+      }
+
+      state.value = state.selectedEnvironments[listLength - 1].id;
     }
   }
 });
 
-export const { environmentOpened, environmentClosed, tabChanged } =
-  tabsSlice.actions;
+export const {
+  environmentOpened,
+  environmentClosed,
+  tabChanged,
+  newEnvironmentCreate,
+  newEnvironmentClose
+} = tabsSlice.actions;

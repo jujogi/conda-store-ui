@@ -3,7 +3,8 @@ import { environmentDetailsApiSlice } from "./environmentDetailsApiSlice";
 
 export enum EnvironmentDetailsModes {
   "READ" = "read-only",
-  "EDIT" = "edit"
+  "EDIT" = "edit",
+  "CREATE" = "create"
 }
 
 export interface IEnvironmentDetailsState {

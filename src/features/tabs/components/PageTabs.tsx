@@ -3,16 +3,32 @@ import { StyledTab } from "src/styles";
 import { StyledTabs } from "src/styles/StyledTabs";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAppDispatch, useAppSelector } from "src/hooks";
-import { environmentClosed, tabChanged } from "../tabsSlice";
+import {
+  environmentClosed,
+  tabChanged,
+  newEnvironmentClose
+} from "../tabsSlice";
+import {
+  modeChanged,
+  EnvironmentDetailsModes
+} from "src/features/environmentDetails";
 
 export const PageTabs = () => {
-  const { selectedEnvironments, value, selectedEnvironment } = useAppSelector(
-    state => state.tabs
-  );
+  const {
+    selectedEnvironments,
+    value,
+    selectedEnvironment,
+    createEnvironment
+  } = useAppSelector(state => state.tabs);
 
   const dispatch = useAppDispatch();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    if (typeof newValue === "number") {
+      dispatch(modeChanged(EnvironmentDetailsModes.READ));
+    } else {
+      dispatch(modeChanged(EnvironmentDetailsModes.CREATE));
+    }
     dispatch(tabChanged(newValue));
   };
 
@@ -29,7 +45,15 @@ export const PageTabs = () => {
           selectedEnvironmentId: selectedEnvironment.id
         })
       );
+      if (createEnvironment) {
+        dispatch(modeChanged(EnvironmentDetailsModes.CREATE));
+      }
     }
+  };
+
+  const handleCloseNewEnvironment = () => {
+    dispatch(newEnvironmentClose());
+    dispatch(modeChanged(EnvironmentDetailsModes.READ));
   };
 
   return (
@@ -61,6 +85,24 @@ export const PageTabs = () => {
           iconPosition="end"
         />
       ))}
+      {createEnvironment && (
+        <StyledTab
+          key="create"
+          label="New Environment"
+          value="create"
+          wrapped
+          icon={
+            <span
+              style={{ marginTop: "5px" }}
+              role="button"
+              onClick={e => handleCloseNewEnvironment()}
+            >
+              <CloseIcon sx={{ color: "#000" }} />
+            </span>
+          }
+          iconPosition="end"
+        />
+      )}
     </StyledTabs>
   );
 };

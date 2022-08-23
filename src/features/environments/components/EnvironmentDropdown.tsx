@@ -11,7 +11,11 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import { Environment } from "./Environment";
 import { useAppDispatch, useAppSelector } from "src/hooks";
-import { environmentOpened } from "src/features/tabs";
+import { environmentOpened, newEnvironmentCreate } from "src/features/tabs";
+import {
+  modeChanged,
+  EnvironmentDetailsModes
+} from "src/features/environmentDetails";
 
 interface IEnvironmentDropdownProps {
   /**
@@ -25,6 +29,11 @@ export const EnvironmentDropdown = ({
 }: IEnvironmentDropdownProps) => {
   const { selectedEnvironment } = useAppSelector(state => state.tabs);
   const dispatch = useAppDispatch();
+
+  const createNewEnvironment = () => {
+    dispatch(modeChanged(EnvironmentDetailsModes.CREATE));
+    dispatch(newEnvironmentCreate());
+  };
 
   return (
     <Accordion
@@ -42,7 +51,7 @@ export const EnvironmentDropdown = ({
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Typography sx={{ width: "217px" }}>{namespace}</Typography>
-          <IconButton>
+          <IconButton onClick={() => createNewEnvironment()}>
             <AddIcon sx={{ width: "15px", height: "15px", color: "#2B2B2B" }} />
           </IconButton>
         </Box>
@@ -58,14 +67,15 @@ export const EnvironmentDropdown = ({
               sx={{ marginBottom: "20px" }}
             >
               <Environment
-                onClick={() =>
+                onClick={() => {
                   dispatch(
                     environmentOpened({
                       environment,
                       selectedEnvironmentId: selectedEnvironment?.id
                     })
-                  )
-                }
+                  );
+                  dispatch(modeChanged(EnvironmentDetailsModes.READ));
+                }}
                 environment={environment}
               />
             </ListItem>
