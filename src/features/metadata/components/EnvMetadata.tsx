@@ -9,25 +9,18 @@ import useTheme from "@mui/material/styles/useTheme";
 import { EnvBuilds, Description } from "src/features/metadata/components";
 import { StyledBox } from "src/styles";
 import { useGetEnviromentsQuery } from "src/features/metadata";
-import { useAppSelector } from "src/hooks";
+import { EnvironmentDetailsModes } from "src/features/environmentDetails";
 
-export enum EnvironmentDetailsModes {
-  "CREAT" = "creat",
-  "READ" = "read-only",
-  "EDIT" = "edit"
-}
+// interface IEnvMetadataProps {
+//   /**
+//    * @param mode change whether the component only displays the list of builds, edit the environment description or create a new description
+//    */
+//   mode: "create" | "read-only" | "edit";
+// }
 
-interface IEnvMetadataProps {
-  /**
-   * @param mode change whether the component only displays the list of builds, edit the environment description or create a new description
-   */
-  mode: "create" | "read-only" | "edit";
-}
-
-export const EnvMetadata = ({ mode }: IEnvMetadataProps) => {
+export const EnvMetadata = ({ mode }: any) => {
   const { palette } = useTheme();
   const { data: enviromentData } = useGetEnviromentsQuery();
-
   const [description, setDescription] = useState("");
 
   return (
