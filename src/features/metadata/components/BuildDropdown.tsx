@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import useTheme from "@mui/material/styles/useTheme";
@@ -18,6 +18,14 @@ interface IBuildProps {
 export const Build = ({ builds }: IBuildProps) => {
   const { palette } = useTheme();
   const [open, setOpen] = useState(false);
+  const [currentBuildName, setCurrentBuildName] = useState("");
+
+  useEffect(() => {
+    setCurrentBuildName("");
+    setTimeout(() => {
+      setCurrentBuildName(builds[0]?.name);
+    }, 150);
+  }, [builds]);
 
   return (
     <Select
@@ -25,7 +33,7 @@ export const Build = ({ builds }: IBuildProps) => {
       onClose={() => setOpen(false)}
       onOpen={() => setOpen(true)}
       sx={{ marginLeft: "13px" }}
-      value={builds && builds.length > 0 ? builds[0].name : ""}
+      value={currentBuildName}
       IconComponent={() => (
         <IconButton
           sx={{ padding: "0px" }}
@@ -42,17 +50,21 @@ export const Build = ({ builds }: IBuildProps) => {
       inputProps={{
         "data-testid": "test-select",
         sx: {
-          padding: "7px 9px !important"
+          padding: "7px 9px !important",
+          minWidth: "320px"
         }
       }}
+      onChange={e => {
+        setCurrentBuildName(e.target.value);
+        const buildId = builds.find(build => build.name === e.target.value);
+        console.log(buildId);
+      }}
     >
-      {builds
-        ? builds.map(build => (
-            <MenuItem key={build.id} value={build.name}>
-              {build.name}
-            </MenuItem>
-          ))
-        : null}
+      {builds.map(build => (
+        <MenuItem key={build.id} value={build.name}>
+          {build.name}
+        </MenuItem>
+      ))}
     </Select>
   );
 };

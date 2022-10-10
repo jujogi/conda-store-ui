@@ -18,7 +18,7 @@ export const EnvBuilds = ({ data, currentBuildId }: IData) => {
       <StyledMetadataItem>
         <b>Build</b>
       </StyledMetadataItem>
-      <Build builds={builds} />
+      {!!builds.length && <Build builds={builds} />}
       <StyledMetadataItem>
         <b>Status:</b> Completed/Building/Failed
       </StyledMetadataItem>
