@@ -1,5 +1,4 @@
 import { format } from "date-fns";
-import { IApiResponse } from "../../common/interfaces";
 import { Build } from "../../common/models";
 
 const STATUS_OPTIONS: any = {
@@ -15,8 +14,8 @@ const isBuilding = (status: string) => {
 };
 
 export const buildMapper = (
-  { data }: IApiResponse<Build[]>,
-  currentBuildId: number
+  data: Build[],
+  currentBuildId: number | undefined
 ) => {
   return data.map(({ id, status, ended_on, scheduled_on }: Build) => {
     const dateDetails = isBuilding(status) ? scheduled_on : ended_on;

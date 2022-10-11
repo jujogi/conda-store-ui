@@ -20,18 +20,14 @@ interface IEnvMetadataProps {
    * @param mode change whether the component only displays the list of builds, edit the environment description or create a new description
    * @param onUpdateDescription change environment description
    */
-  selectedEnv: any;
   description: any;
   mode: "create" | "read-only" | "edit";
-  current_build_id: number;
   onUpdateDescription: (description: string) => void;
 }
 
 export const EnvMetadata = ({
-  selectedEnv,
-  description,
   mode,
-  current_build_id,
+  description,
   onUpdateDescription
 }: IEnvMetadataProps) => {
   const { palette } = useTheme();
@@ -54,9 +50,7 @@ export const EnvMetadata = ({
         description={description || undefined}
         onChangeDescription={onUpdateDescription}
       />
-      {mode !== EnvironmentDetailsModes.CREATE && selectedEnv && (
-        <EnvBuilds data={selectedEnv} currentBuildId={current_build_id} />
-      )}
+      {mode !== EnvironmentDetailsModes.CREATE && <EnvBuilds />}
     </StyledBox>
   );
 };

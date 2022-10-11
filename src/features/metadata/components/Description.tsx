@@ -9,7 +9,7 @@ interface IDescriptionProps {
    * @param mode change whether the component only displays the list or we are able to edit it
    */
   mode: "create" | "read-only" | "edit";
-  description: string;
+  description: any;
   onChangeDescription: (description: string) => void;
 }
 

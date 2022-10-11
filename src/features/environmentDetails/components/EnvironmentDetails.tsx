@@ -10,7 +10,7 @@ import { useGetBuildPackagesQuery } from "../../../features/dependencies";
 import { ArtifactList } from "../../../features/artifacts";
 import {
   EnvMetadata,
-  useLazyGetEnviromentBuildsQuery
+  useGetEnviromentBuildsQuery
 } from "../../../features/metadata";
 import {
   EnvironmentDetailsModes,
@@ -31,7 +31,6 @@ export const EnvironmentDetails = ({
   const { mode } = useAppSelector(state => state.environmentDetails);
   const { page } = useAppSelector(state => state.dependencies);
   const { selectedEnvironment } = useAppSelector(state => state.tabs);
-  const [enviromentBuilds, setEnviromentBuilds] = useState<any>([]);
   const [name, setName] = useState(selectedEnvironment?.name || "");
   const [createOrUpdate] = useCreateOrUpdateMutation();
   const [descriptionIsUpdated, setDescriptionIsUpdated] = useState(false);
@@ -44,8 +43,6 @@ export const EnvironmentDetails = ({
     visible: false
   });
 
-  const [triggerQuery] = useLazyGetEnviromentBuildsQuery();
-
   if (selectedEnvironment) {
     useGetBuildQuery(selectedEnvironment.current_build_id);
     useGetBuildPackagesQuery({
@@ -53,6 +50,7 @@ export const EnvironmentDetails = ({
       page,
       size: 100
     });
+    useGetEnviromentBuildsQuery(selectedEnvironment);
   }
 
   const updateDescription = (description: string) => {
@@ -94,11 +92,6 @@ export const EnvironmentDetails = ({
     setName(selectedEnvironment?.name || "");
     setDescription(selectedEnvironment?.description || "");
     setDescriptionIsUpdated(false);
-
-    (async () => {
-      const { data } = await triggerQuery(selectedEnvironment);
-      setEnviromentBuilds(data);
-    })();
   }, [selectedEnvironment, envIsUpdated]);
 
   return (
@@ -116,10 +109,8 @@ export const EnvironmentDetails = ({
       )}
       <Box sx={{ marginBottom: "30px" }}>
         <EnvMetadata
-          selectedEnv={enviromentBuilds}
-          description={description}
-          current_build_id={selectedEnvironment?.current_build_id || 0}
           mode={mode}
+          description={description}
           onUpdateDescription={updateDescription}
         />
       </Box>

@@ -1,38 +1,72 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { StyledMetadataItem } from "../../../styles/StyledMetadataItem";
-import { Build } from "../../../features/metadata/components";
-import { IApiResponse } from "../../../common/interfaces";
-import { Build as IBuild } from "../../../common/models";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import useTheme from "@mui/material/styles/useTheme";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import IconButton from "@mui/material/IconButton";
 import { buildMapper } from "../../../utils/helpers/buildMapper";
+import { useAppSelector } from "../../../hooks";
 
-interface IData {
-  data: IApiResponse<IBuild[]>;
-  currentBuildId: number;
-}
-
-export const EnvBuilds = ({ data, currentBuildId }: IData) => {
-  const { data: envData = [] } = data;
-  const builds = envData.length ? buildMapper(data, currentBuildId) : [];
-  const [status, setStatus] = useState("");
-
-  const selectedBuild = (build: any) => {
-    setStatus(build.status);
-  };
-
-  useEffect(() => {
-    if (builds.length) {
-      setStatus(builds[0].status);
-    }
-  }, [builds]);
+export const EnvBuilds = () => {
+  const { palette } = useTheme();
+  const { builds } = useAppSelector(state => state.enviroments);
+  const { selectedEnvironment } = useAppSelector(state => state.tabs);
+  const options = buildMapper(builds, selectedEnvironment?.current_build_id);
+  const [currentBuild, setCurrentBuild] = useState(options[0]?.name ?? "");
+  const [status, setStatus] = useState(options[0]?.status ?? "");
+  const [open, setOpen] = useState(false);
 
   return (
     <>
-      <StyledMetadataItem>
-        <b>Build</b>
-      </StyledMetadataItem>
-      {!!builds.length && (
+      {!!options.length && (
         <>
-          <Build builds={builds} onChangeDropdown={selectedBuild} />
+          <StyledMetadataItem>
+            <b>Build</b>
+          </StyledMetadataItem>
+          <Select
+            open={open}
+            onClose={() => setOpen(false)}
+            onOpen={() => setOpen(true)}
+            sx={{ marginLeft: "13px" }}
+            value={currentBuild}
+            IconComponent={() => (
+              <IconButton
+                sx={{ padding: "0px" }}
+                onClick={() => setOpen(currState => !currState)}
+              >
+                <ArrowDropDownIcon
+                  sx={{
+                    height: "37px",
+                    borderLeft: `1px solid  ${palette.primary.main}`
+                  }}
+                />
+              </IconButton>
+            )}
+            inputProps={{
+              "data-testid": "test-select",
+              sx: {
+                padding: "7px 9px !important",
+                minWidth: "320px"
+              }
+            }}
+            onChange={e => {
+              const build = options.find(
+                (build: { name: string }) => build.name === e.target.value
+              );
+              console.log(build);
+              if (build) {
+                setCurrentBuild(build.name);
+                setStatus(build.status);
+              }
+            }}
+          >
+            {options.map((build: any) => (
+              <MenuItem key={build.id} value={build.name}>
+                {build.name}
+              </MenuItem>
+            ))}
+          </Select>
           <StyledMetadataItem>
             <b>Status:</b> {status}
           </StyledMetadataItem>
