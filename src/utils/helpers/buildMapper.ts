@@ -25,20 +25,23 @@ export const buildMapper = (
     if (isBuilding(status)) {
       return {
         id,
-        name: `${date} - Building`
+        name: `${date} - Building`,
+        status: STATUS_OPTIONS[status]
       };
     }
 
     if (id === currentBuildId) {
       return {
         id,
-        name: `${date} - Active`
+        name: `${date} - Active`,
+        status: "Completed"
       };
     }
 
     return {
       id,
-      name: `${date} - ${STATUS_OPTIONS[status]}`
+      name: `${date} - ${STATUS_OPTIONS[status]}`,
+      status: "Completed"
     };
   });
 };

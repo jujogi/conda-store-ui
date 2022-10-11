@@ -12,10 +12,12 @@ interface IBuildProps {
   builds: {
     id: number;
     name: string;
+    status: string;
   }[];
+  onChangeDropdown: (build: any) => void;
 }
 
-export const Build = ({ builds }: IBuildProps) => {
+export const Build = ({ builds, onChangeDropdown }: IBuildProps) => {
   const { palette } = useTheme();
   const [open, setOpen] = useState(false);
   const [currentBuildName, setCurrentBuildName] = useState("");
@@ -56,8 +58,8 @@ export const Build = ({ builds }: IBuildProps) => {
       }}
       onChange={e => {
         setCurrentBuildName(e.target.value);
-        const buildId = builds.find(build => build.name === e.target.value);
-        console.log(buildId);
+        const build = builds.find(build => build.name === e.target.value);
+        onChangeDropdown(build);
       }}
     >
       {builds.map(build => (
