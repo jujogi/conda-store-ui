@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyledMetadataItem } from "../../../styles/StyledMetadataItem";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -13,9 +13,37 @@ export const EnvBuilds = () => {
   const { builds } = useAppSelector(state => state.enviroments);
   const { selectedEnvironment } = useAppSelector(state => state.tabs);
   const options = buildMapper(builds, selectedEnvironment?.current_build_id);
-  const [currentBuild, setCurrentBuild] = useState(options[0]?.name ?? "");
+  const [currentBuild, setCurrentBuild] = useState("");
   const [status, setStatus] = useState(options[0]?.status ?? "");
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (options.length) {
+      const initialBuildName = options[0].name;
+      const initialBuildStatus = options[0].status;
+
+      if (currentBuild === "") {
+        setCurrentBuild(initialBuildName);
+        setStatus(initialBuildStatus);
+        return;
+      }
+
+      if (initialBuildName !== currentBuild) {
+        const buildIsAvailable = !!getBuild(currentBuild);
+        if (buildIsAvailable) {
+          setCurrentBuild(currentBuild);
+          setStatus(status);
+        } else {
+          setCurrentBuild(initialBuildName);
+          setStatus(initialBuildStatus);
+        }
+      }
+    }
+  }, [options]);
+
+  const getBuild = (name: string) => {
+    return options.find((build: { name: string }) => build.name === name);
+  };
 
   return (
     <>
@@ -51,13 +79,11 @@ export const EnvBuilds = () => {
               }
             }}
             onChange={e => {
-              const build = options.find(
-                (build: { name: string }) => build.name === e.target.value
-              );
-              console.log(build);
+              const build = getBuild(e.target.value);
               if (build) {
                 setCurrentBuild(build.name);
                 setStatus(build.status);
+                return;
               }
             }}
           >
