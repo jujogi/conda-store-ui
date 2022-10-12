@@ -24,7 +24,6 @@ export const enviromentsSlice = createSlice({
   reducers: {
     addNewBuild: (state, action) => {
       state.builds.unshift(action.payload);
-      console.log(action.payload);
     }
   },
   extraReducers: builder => {
