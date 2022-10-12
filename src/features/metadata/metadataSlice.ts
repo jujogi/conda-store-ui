@@ -37,7 +37,6 @@ export const enviromentsSlice = createSlice({
       environmentsApiSlice.endpoints.getEnviromentBuilds.matchFulfilled,
       (state, { payload: { data } }) => {
         state.builds = data;
-        console.log(data);
       }
     );
   }
