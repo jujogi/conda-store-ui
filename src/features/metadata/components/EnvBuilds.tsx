@@ -16,6 +16,7 @@ export const EnvBuilds = () => {
   const [currentBuild, setCurrentBuild] = useState("");
   const [status, setStatus] = useState(options[0]?.status ?? "");
   const [open, setOpen] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     if (options.length) {
@@ -25,7 +26,7 @@ export const EnvBuilds = () => {
       if (currentBuild === "") {
         setCurrentBuild(initialBuildName);
         setStatus(initialBuildStatus);
-        return;
+        setIsReady(true);
       }
 
       if (initialBuildName !== currentBuild) {
@@ -37,6 +38,12 @@ export const EnvBuilds = () => {
           setCurrentBuild(initialBuildName);
           setStatus(initialBuildStatus);
         }
+        setIsReady(true);
+      }
+
+      if (isReady) {
+        setCurrentBuild(options[0].name);
+        setStatus(options[0].status);
       }
     }
   }, [options]);
@@ -83,7 +90,6 @@ export const EnvBuilds = () => {
               if (build) {
                 setCurrentBuild(build.name);
                 setStatus(build.status);
-                return;
               }
             }}
           >

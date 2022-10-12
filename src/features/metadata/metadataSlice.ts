@@ -21,7 +21,12 @@ const initialState: IBuildState = {
 export const enviromentsSlice = createSlice({
   name: "environments",
   initialState,
-  reducers: {},
+  reducers: {
+    addNewBuild: (state, action) => {
+      state.builds.unshift(action.payload);
+      console.log(action.payload);
+    }
+  },
   extraReducers: builder => {
     builder.addMatcher(
       environmentsApiSlice.endpoints.getEnviroments.matchFulfilled,
@@ -33,7 +38,10 @@ export const enviromentsSlice = createSlice({
       environmentsApiSlice.endpoints.getEnviromentBuilds.matchFulfilled,
       (state, { payload: { data } }) => {
         state.builds = data;
+        console.log(data);
       }
     );
   }
 });
+
+export const { addNewBuild } = enviromentsSlice.actions;

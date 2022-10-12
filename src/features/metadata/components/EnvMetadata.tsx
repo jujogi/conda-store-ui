@@ -16,12 +16,12 @@ export enum EnvironmentDetailsModes {
 }
 interface IEnvMetadataProps {
   /**
-   * @param selectedEnv Selected environment's information
    * @param mode change whether the component only displays the list of builds, edit the environment description or create a new description
+   * @param description Selected environment's description
    * @param onUpdateDescription change environment description
    */
-  description: any;
   mode: "create" | "read-only" | "edit";
+  description: any;
   onUpdateDescription: (description: string) => void;
 }
 

@@ -10,7 +10,8 @@ import { useGetBuildPackagesQuery } from "../../../features/dependencies";
 import { ArtifactList } from "../../../features/artifacts";
 import {
   EnvMetadata,
-  useGetEnviromentBuildsQuery
+  useGetEnviromentBuildsQuery,
+  addNewBuild
 } from "../../../features/metadata";
 import {
   EnvironmentDetailsModes,
@@ -19,6 +20,7 @@ import {
 } from "../../../features/environmentDetails";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import artifactList from "../../../utils/helpers/artifact";
+import { mockBuild } from "../../../utils/helpers/build";
 
 interface IEnvDetails {
   environmentNotification: (notification: any) => void;
@@ -37,7 +39,6 @@ export const EnvironmentDetails = ({
   const [description, setDescription] = useState(
     selectedEnvironment ? selectedEnvironment.description : undefined
   );
-  const [envIsUpdated, setEnvIsUpdated] = useState(false);
   const [error, setError] = useState({
     message: "",
     visible: false
@@ -73,13 +74,16 @@ export const EnvironmentDetails = ({
         message: "",
         visible: false
       });
-      await createOrUpdate(environmentInfo).unwrap();
+      const { data } = await createOrUpdate(environmentInfo).unwrap();
+      const newBuild = mockBuild(selectedEnvironment?.id ?? 0, data.build_id);
+
+      dispatch(addNewBuild(newBuild));
       dispatch(modeChanged(EnvironmentDetailsModes.READ));
+      setDescription(description);
       environmentNotification({
         show: true,
         description: `${name} environment has been updated`
       });
-      setEnvIsUpdated(true);
     } catch (e) {
       setError({
         message: e?.data?.message ?? e.status,
@@ -92,7 +96,7 @@ export const EnvironmentDetails = ({
     setName(selectedEnvironment?.name || "");
     setDescription(selectedEnvironment?.description || "");
     setDescriptionIsUpdated(false);
-  }, [selectedEnvironment, envIsUpdated]);
+  }, [selectedEnvironment]);
 
   return (
     <Box sx={{ padding: "14px 12px" }}>
