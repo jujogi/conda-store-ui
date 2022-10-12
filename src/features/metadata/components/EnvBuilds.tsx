@@ -8,7 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import { buildMapper } from "../../../utils/helpers/buildMapper";
 import { useAppSelector } from "../../../hooks";
 
-export const EnvBuilds = () => {
+export const EnvBuilds = ({ updateBuildsList }: any) => {
   const { palette } = useTheme();
   const { builds } = useAppSelector(state => state.enviroments);
   const { selectedEnvironment } = useAppSelector(state => state.tabs);
@@ -39,6 +39,15 @@ export const EnvBuilds = () => {
       }
     }
   }, [options]);
+
+  useEffect(() => {
+    if (updateBuildsList) {
+      const newBuildName = options[0].name;
+      const newBuildStatus = options[0].status;
+      setCurrentBuild(newBuildName);
+      setStatus(newBuildStatus);
+    }
+  }, [updateBuildsList]);
 
   const getBuild = (name: string) => {
     return options.find((build: { name: string }) => build.name === name);

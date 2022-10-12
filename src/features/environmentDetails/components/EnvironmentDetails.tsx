@@ -35,6 +35,7 @@ export const EnvironmentDetails = ({
   const { selectedEnvironment } = useAppSelector(state => state.tabs);
   const [name, setName] = useState(selectedEnvironment?.name || "");
   const [createOrUpdate] = useCreateOrUpdateMutation();
+  const [envIsUpdated, setEnvIsUpdated] = useState(false);
   const [descriptionIsUpdated, setDescriptionIsUpdated] = useState(false);
   const [description, setDescription] = useState(
     selectedEnvironment ? selectedEnvironment.description : undefined
@@ -80,6 +81,7 @@ export const EnvironmentDetails = ({
       dispatch(addNewBuild(newBuild));
       dispatch(modeChanged(EnvironmentDetailsModes.READ));
       setDescription(description);
+      setEnvIsUpdated(true);
       environmentNotification({
         show: true,
         description: `${name} environment has been updated`
@@ -96,6 +98,7 @@ export const EnvironmentDetails = ({
     setName(selectedEnvironment?.name || "");
     setDescription(selectedEnvironment?.description || "");
     setDescriptionIsUpdated(false);
+    setEnvIsUpdated(false);
   }, [selectedEnvironment]);
 
   return (
@@ -115,6 +118,7 @@ export const EnvironmentDetails = ({
         <EnvMetadata
           mode={mode}
           description={description}
+          envIsUpdated={envIsUpdated}
           onUpdateDescription={updateDescription}
         />
       </Box>
