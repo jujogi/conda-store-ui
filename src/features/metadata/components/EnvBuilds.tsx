@@ -17,6 +17,8 @@ export const EnvBuilds = ({ updateBuildsList }: any) => {
   const [status, setStatus] = useState(options[0]?.status ?? "");
   const [open, setOpen] = useState(false);
 
+  console.log(builds);
+
   useEffect(() => {
     if (options.length) {
       const initialBuildName = options[0].name;
@@ -31,10 +33,8 @@ export const EnvBuilds = ({ updateBuildsList }: any) => {
         const buildIsAvailable = !!getBuild(currentBuild);
         if (buildIsAvailable) {
           setCurrentBuild(currentBuild);
-          setStatus(status);
         } else {
           setCurrentBuild(initialBuildName);
-          setStatus(initialBuildStatus);
         }
       }
     }
