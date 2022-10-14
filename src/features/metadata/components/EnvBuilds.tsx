@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StyledMetadataItem } from "../../../styles/StyledMetadataItem";
-import Select from "@mui/material/Select";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import useTheme from "@mui/material/styles/useTheme";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -53,6 +53,14 @@ export const EnvBuilds = ({ updateBuildsList }: any) => {
     return options.find((build: { name: string }) => build.name === name);
   };
 
+  const handleChange = (e: SelectChangeEvent<string>) => {
+    const build = getBuild(e.target.value);
+    if (build) {
+      setCurrentBuild(build.name);
+      setStatus(build.status);
+    }
+  };
+
   return (
     <>
       {!!options.length && (
@@ -86,13 +94,7 @@ export const EnvBuilds = ({ updateBuildsList }: any) => {
                 minWidth: "320px"
               }
             }}
-            onChange={e => {
-              const build = getBuild(e.target.value);
-              if (build) {
-                setCurrentBuild(build.name);
-                setStatus(build.status);
-              }
-            }}
+            onChange={handleChange}
           >
             {options.map((build: any) => (
               <MenuItem key={build.id} value={build.name}>

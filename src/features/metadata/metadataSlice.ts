@@ -8,6 +8,7 @@ export interface IBuildState {
   page: number;
   count: number;
   size: number;
+  currentBuild: { id: number } | null;
 }
 
 const initialState: IBuildState = {
@@ -15,7 +16,8 @@ const initialState: IBuildState = {
   builds: [],
   page: 1,
   count: 0,
-  size: 0
+  size: 0,
+  currentBuild: null
 };
 
 export const enviromentsSlice = createSlice({

@@ -21,15 +21,15 @@ interface IEnvMetadataProps {
    * * @param envIsUpdated notifies when env is updated in order to select the new build in the dropdown
    * @param onUpdateDescription change environment description
    */
+  description?: any;
   mode: "create" | "read-only" | "edit";
-  description: any;
   envIsUpdated?: boolean;
   onUpdateDescription: (description: string) => void;
 }
 
 export const EnvMetadata = ({
+  description = "",
   mode,
-  description,
   envIsUpdated,
   onUpdateDescription
 }: IEnvMetadataProps) => {

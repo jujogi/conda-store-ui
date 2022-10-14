@@ -1,8 +1,7 @@
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
-import React, { useEffect, useState } from "react";
 import { stringify } from "yaml";
-
 import { EnvironmentDetailsHeader } from "./EnvironmentDetailsHeader";
 import { SpecificationEdit, SpecificationReadOnly } from "./Specification";
 import { useGetBuildQuery } from "../environmentDetailsApiSlice";
@@ -21,9 +20,19 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import artifactList from "../../../utils/helpers/artifact";
 import { mockBuild } from "../../../utils/helpers/build";
+import { CondaSpecificationPip } from "../../../common/models";
+import { updatePackages } from "../../requestedPackages";
+import { updateChannels } from "../../channels";
 
 interface IEnvDetails {
   environmentNotification: (notification: any) => void;
+}
+
+interface IUpdateEnvironmentArgs {
+  code: {
+    dependencies: (string | CondaSpecificationPip)[];
+    channels: string[];
+  };
 }
 
 export const EnvironmentDetails = ({
@@ -60,7 +69,7 @@ export const EnvironmentDetails = ({
     setDescriptionIsUpdated(true);
   };
 
-  const updateEnvironment = async (code: any) => {
+  const updateEnvironment = async (code: IUpdateEnvironmentArgs) => {
     const namespace = selectedEnvironment?.namespace.name;
 
     const environmentInfo = {
@@ -78,15 +87,19 @@ export const EnvironmentDetails = ({
       const { data } = await createOrUpdate(environmentInfo).unwrap();
       const newBuild = mockBuild(selectedEnvironment?.id ?? 0, data.build_id);
 
+      console.log(code);
+
       dispatch(addNewBuild(newBuild));
       dispatch(modeChanged(EnvironmentDetailsModes.READ));
-      setDescription(description);
+      dispatch(updatePackages(code.code.dependencies));
+      dispatch(updateChannels(code.code.channels));
       setEnvIsUpdated(true);
       environmentNotification({
         show: true,
         description: `${name} environment has been updated`
       });
     } catch (e) {
+      console.log(e);
       setError({
         message: e?.data?.message ?? e.status,
         visible: true

@@ -19,7 +19,7 @@ export const buildMapper = (
 ) => {
   return data.map(({ id, status, ended_on, scheduled_on }: Build) => {
     const dateDetails = isBuilding(status) ? scheduled_on : ended_on;
-    const date = format(new Date(dateDetails), "MMMM do, yyyy - h:mm");
+    const date = format(new Date(dateDetails), "MMMM do, yyyy - h:mm a");
 
     if (isBuilding(status)) {
       return {
