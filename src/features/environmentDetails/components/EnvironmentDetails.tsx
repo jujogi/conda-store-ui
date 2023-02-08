@@ -20,7 +20,8 @@ import {
 import {
   EnvironmentDetailsModes,
   useCreateOrUpdateMutation,
-  modeChanged
+  modeChanged,
+  useUpdateBuildIdMutation
 } from "../../../features/environmentDetails";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import artifactList from "../../../utils/helpers/artifact";
@@ -59,6 +60,8 @@ export const EnvironmentDetails = ({
   const [triggerQuery] = useLazyGetArtifactsQuery();
   const [triggerBuildPackages] = useLazyGetBuildPackagesQuery();
   const [createOrUpdate] = useCreateOrUpdateMutation();
+  const [updateBuildMethod] = useUpdateBuildIdMutation();
+
   useGetEnviromentBuildsQuery(selectedEnvironment, {
     pollingInterval: INTERVAL_REFRESHING
   });
@@ -152,6 +155,16 @@ export const EnvironmentDetails = ({
     }
   };
 
+  const updateBuildId = async (buildId: number) => {
+    const namespace = selectedEnvironment?.namespace.name;
+    const environment = selectedEnvironment?.name;
+    try {
+      await updateBuildMethod({ namespace, environment, buildId });
+    } catch (e) {
+      console.log("error", e);
+    }
+  };
+
   useInterval(async () => {
     (async () => {
       loadArtifacts();
@@ -179,6 +192,7 @@ export const EnvironmentDetails = ({
           selectedBuildId={currentBuildId}
           description={description}
           onUpdateDescription={updateDescription}
+          onUpdateBuildId={updateBuildId}
         />
       </Box>
       <Box sx={{ marginBottom: "30px" }}>

@@ -1,6 +1,7 @@
 import React from "react";
 import { BlockContainer } from "../../../components";
 import { Description, EnvBuilds } from "../../../features/metadata/components";
+import { StyledButtonPrimary } from "../../../styles";
 
 export enum EnvironmentDetailsModes {
   "CREATE" = "create",
@@ -17,6 +18,7 @@ interface IEnvMetadataProps {
   currentBuildId?: number | undefined;
   selectedBuildId?: number;
   onUpdateDescription: (description: string) => void;
+  onUpdateBuildId: (buildId: number) => void;
 }
 
 export const EnvMetadata = ({
@@ -24,7 +26,8 @@ export const EnvMetadata = ({
   description = "",
   currentBuildId,
   selectedBuildId,
-  onUpdateDescription
+  onUpdateDescription,
+  onUpdateBuildId
 }: IEnvMetadataProps) => {
   return (
     <BlockContainer title="Environment Metadata">
@@ -36,6 +39,12 @@ export const EnvMetadata = ({
       {mode !== EnvironmentDetailsModes.CREATE &&
         currentBuildId &&
         selectedBuildId && <EnvBuilds selectedBuildId={selectedBuildId} />}
+
+      {mode === EnvironmentDetailsModes.EDIT && selectedBuildId && (
+        <StyledButtonPrimary onClick={() => onUpdateBuildId(selectedBuildId)}>
+          Update Env Build
+        </StyledButtonPrimary>
+      )}
     </BlockContainer>
   );
 };
